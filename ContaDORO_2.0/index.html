@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ContaDORO 2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Oxanium:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sun: #ffd54a;
+      --mango: #ff8f3a;
+      --cherry: #ff4d8d;
+      --mint: #34f4c6;
+      --ink: #1b1230;
+      --glass: rgba(255, 255, 255, 0.18);
+      --text: #fff7e5;
+      --shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Oxanium", "Orbitron", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255, 213, 74, 0.35), transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(255, 77, 141, 0.35), transparent 40%),
+        radial-gradient(circle at 80% 90%, rgba(52, 244, 198, 0.35), transparent 45%),
+        linear-gradient(135deg, #2a1542 0%, #1b1230 45%, #130a1f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      overflow-x: hidden;
+    }
+
+    .background-collage {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+    }
+
+    .background-collage img {
+      position: absolute;
+      filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.35));
+      animation: floaty 10s ease-in-out infinite;
+    }
+
+    .bg-1 { top: 6%; left: 4%; width: 220px; }
+    .bg-2 { top: 10%; right: 6%; width: 180px; animation-delay: -2s; }
+    .bg-3 { bottom: 8%; left: 10%; width: 200px; animation-delay: -4s; }
+    .bg-4 { bottom: 6%; right: 8%; width: 240px; animation-delay: -6s; }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+      50% { transform: translateY(-12px) rotate(var(--rot, 0deg)); }
+    }
+
+    .app {
+      width: min(980px, 100%);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      height: 86px;
+      width: auto;
+      filter: drop-shadow(0 12px 24px rgba(255, 77, 141, 0.4));
+    }
+
+    .logo-stack {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .logo-stack img {
+      width: 62px;
+      height: auto;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 6px;
+    }
+
+    h1 {
+      font-family: "Orbitron", "Oxanium", system-ui, sans-serif;
+      font-size: clamp(32px, 5vw, 52px);
+      margin: 0;
+      letter-spacing: 0.02em;
+      color: var(--sun);
+      text-shadow: 0 10px 24px rgba(255, 213, 74, 0.4);
+    }
+
+    .subtitle {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .subtitle span {
+      display: inline-block;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 6px 12px;
+      border-radius: 14px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    @media (min-width: 820px) {
+      .grid.two {
+        grid-template-columns: 1.1fr 1fr;
+      }
+      .grid.three {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .today-card {
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow);
+    }
+
+    .today-label {
+      opacity: 0.8;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .today-count {
+      font-size: clamp(64px, 10vw, 96px);
+      font-weight: 800;
+      color: var(--mint);
+      margin: 6px 0 0;
+      text-shadow: 0 14px 32px rgba(52, 244, 198, 0.35);
+    }
+
+    .button-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .doro-button {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 213, 74, 0.9), rgba(255, 77, 141, 0.85));
+      box-shadow:
+        0 18px 42px rgba(255, 77, 141, 0.35),
+        0 28px 60px rgba(0, 0, 0, 0.45),
+        inset 0 0 24px rgba(255, 255, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .doro-button:active {
+      transform: translateY(4px) scale(0.98);
+      box-shadow:
+        0 12px 28px rgba(255, 77, 141, 0.28),
+        0 20px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .doro-button img {
+      width: 140px;
+      height: auto;
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.35));
+    }
+
+    .doro-button span {
+      font-family: "Orbitron", "Oxanium", system-ui, sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.8);
+      padding: 6px 14px;
+      border-radius: 14px;
+    }
+
+    .card-title {
+      margin: 0 0 8px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      opacity: 0.75;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 160px;
+      margin-top: 12px;
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(180deg, var(--cherry) 0%, var(--sun) 100%);
+      border-radius: 10px 10px 6px 6px;
+      position: relative;
+      min-height: 4px;
+    }
+
+    .bar-label {
+      position: absolute;
+      bottom: -22px;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0.85;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    th { opacity: 0.8; font-weight: 700; }
+    td { opacity: 0.9; }
+
+    .credits {
+      text-align: right;
+      margin-top: 12px;
+      font-size: 12px;
+      opacity: 0.75;
+      letter-spacing: 0.04em;
+    }
+
+    .report-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      margin-top: 12px;
+    }
+
+    .report-btn {
+      border: none;
+      cursor: pointer;
+      font-family: "Orbitron", "Oxanium", system-ui, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--sun), var(--mint));
+      padding: 10px 18px;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .report-btn:active {
+      transform: translateY(2px) scale(0.98);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .report-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 4, 12, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 50;
+    }
+
+    .report-modal.is-open {
+      display: flex;
+    }
+
+    .report-logos {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .report-logos img {
+      height: 42px;
+      width: auto;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+    }
+
+    .report-watermark {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      width: 180px;
+      opacity: 0.12;
+      pointer-events: none;
+    }
+
+    .report-collage {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      z-index: 0;
+    }
+
+    .report-collage img {
+      position: absolute;
+      width: 140px;
+      height: auto;
+      filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+    }
+
+    .report-collage .rc-1 { top: 16px; left: 20px; }
+    .report-collage .rc-2 { top: 40px; right: 40px; width: 110px; }
+    .report-collage .rc-3 { bottom: 24px; left: 40px; width: 120px; }
+    .report-collage .rc-4 { bottom: 18px; right: 24px; width: 150px; }
+
+    .report-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .report-hero-logo {
+      display: block;
+      margin: 8px auto 4px;
+      width: min(260px, 70%);
+      height: auto;
+      filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.35));
+    }
+
+    .report-panel {
+      width: min(980px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: rgba(10, 8, 20, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    @media print {
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      #report-modal, #report-modal * { visibility: visible; }
+      #report-modal {
+        position: static;
+        inset: auto;
+        background: white;
+        color: #111;
+        display: block;
+      }
+      .report-panel {
+        max-height: none;
+        width: 92%;
+        margin: 0 auto;
+        box-shadow: none;
+        border: none;
+        background: white;
+        color: #111;
+      }
+      .report-actions { display: none; }
+      .report-close { display: none; }
+      .report-watermark { opacity: 0.15; }
+    }
+
+    .report-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .report-title {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 32px);
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .report-stat {
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .report-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 160px;
+      margin-top: 12px;
+    }
+
+    .report-bar {
+      flex: 1;
+      background: linear-gradient(180deg, var(--mint) 0%, var(--sun) 100%);
+      border-radius: 10px 10px 6px 6px;
+      position: relative;
+      min-height: 4px;
+    }
+
+    .report-bar-label {
+      position: absolute;
+      bottom: -22px;
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      opacity: 0.85;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .report-table th, .report-table td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .report-close {
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: transparent;
+      color: var(--text);
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: "Orbitron", "Oxanium", system-ui, sans-serif;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="background-collage">
+    <img class="bg-1" src="Corridoro.png" alt="" style="--rot:-8deg;">
+    <img class="bg-2" src="Dorareoo.PNG" alt="" style="--rot:10deg;">
+    <img class="bg-3" src="dorobuono.png" alt="" style="--rot:6deg;">
+    <img class="bg-4" src="Dorotauro.png" alt="" style="--rot:-6deg;">
+  </div>
+
+  <div class="app">
+    <header>
+      <div class="brand">
+        <img class="logo" src="Dorooriginale.png" alt="ContaDORO logo" />
+        <div>
+          <h1>ContaDORO 2.0</h1>
+          <div class="subtitle"><span id="subtitle">Conta i DORO giornalieri</span></div>
+        </div>
+      </div>
+      <div class="logo-stack">
+        <img src="dorolungo.png" alt="DORO logo lungo" />
+        <img src="Dorareoo.PNG" alt="DORO logo" />
+        <img src="Dorosu.PNG" alt="DORO logo su" />
+      </div>
+    </header>
+
+    <div class="grid two">
+      <div class="today-card">
+        <div class="today-label">DORO di oggi</div>
+        <div id="today-count" class="today-count">0</div>
+      </div>
+
+      <div class="button-wrap">
+        <button id="add-btn" class="doro-button" aria-label="Aggiungi un DORO">
+          <img src="Dorosu.PNG" alt="DORO button" />
+          <span>Aggiungi DORO</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grid two" style="margin-top: 16px;">
+      <div class="card">
+        <h3 class="card-title">Riepilogo</h3>
+        <div class="stat-grid">
+          <div class="stat">
+            <div class="stat-label">Oggi</div>
+            <div id="stat-today" class="stat-value">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Settimana</div>
+            <div id="stat-week" class="stat-value">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Mese</div>
+            <div id="stat-month" class="stat-value">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Streak giorni</div>
+            <div id="stat-streak" class="stat-value">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Ultimi 7 giorni</h3>
+        <div id="chart" class="chart"></div>
+      </div>
+    </div>
+
+
+    <div class="report-actions">
+      <button id="report-btn" class="report-btn">Genera report</button>
+    </div>
+
+    <div class="card" style="margin-top: 16px;">
+      <h3 class="card-title">Storico</h3>
+      <table>
+        <thead>
+          <tr><th>Data</th><th>Giorno</th><th>DORO</th></tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+
+    <div class="credits">Copyright by DOROORIGINALENUMEROUNO</div>
+  </div>
+
+
+  <div id="report-modal" class="report-modal" aria-hidden="true">
+    <div class="report-panel" role="dialog" aria-modal="true" aria-label="Report DORO">
+      <div class="report-collage">
+        <img class="rc-1" src="Corridoro.png" alt="">
+        <img class="rc-2" src="Dorareoo.PNG" alt="">
+        <img class="rc-3" src="dorobuono.png" alt="">
+        <img class="rc-4" src="Dorosu.PNG" alt="">
+      </div>
+      <div class="report-header">
+        <div>
+          <h2 class="report-title">Report DORO</h2>
+          <div class="report-logos">
+            <img src="Dorooriginale.png" alt="DORO">
+            <img src="dorolungo.png" alt="DORO">
+            <img src="Dorosu.PNG" alt="DORO">
+          </div>
+        </div>
+        <div class="report-actions">
+          <button id="report-print" class="report-btn">Stampa o salva PDF</button>
+          <button id="report-close" class="report-close">Chiudi</button>
+        </div>
+      </div>
+      <img class="report-hero-logo" src="Dorooriginale.png" alt="DORO">
+      <div class="report-content">
+        <div id="report-body"></div>
+        <img class="report-watermark" src="Dorotauro.png" alt="">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'contaDoroEntries';
+    const phrases = [
+      'Conta i DORO giornalieri',
+      'Un DORO al giorno toglie DORO di torno',
+      'DORODANDANDAN',
+      'Copyright by DOROORIGINALENUMEROUNO'
+    ];
+
+    const todayCountEl = document.getElementById('today-count');
+    const statTodayEl = document.getElementById('stat-today');
+    const statWeekEl = document.getElementById('stat-week');
+    const statMonthEl = document.getElementById('stat-month');
+    const statStreakEl = document.getElementById('stat-streak');
+    const historyBodyEl = document.getElementById('history-body');
+    const chartEl = document.getElementById('chart');
+    const addBtn = document.getElementById('add-btn');
+    const subtitleEl = document.getElementById('subtitle');
+
+
+    const reportBtn = document.getElementById('report-btn');
+    const reportModal = document.getElementById('report-modal');
+    const reportBody = document.getElementById('report-body');
+    const reportClose = document.getElementById('report-close');
+    const reportPrint = document.getElementById('report-print');
+
+    function monthKey(date) {
+      const d = new Date(date);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function buildMonthlyTotals(entries) {
+      const map = new Map();
+      for (const entry of entries) {
+        const key = monthKey(entry.date);
+        map.set(key, (map.get(key) || 0) + entry.count);
+      }
+      return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
+    }
+
+    function renderReport(entries) {
+      if (!entries.length) {
+        reportBody.innerHTML = '<div class="card">Nessun dato disponibile per il report.</div>';
+        return;
+      }
+
+      const sorted = [...entries].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const total = sorted.reduce((sum, e) => sum + e.count, 0);
+      const days = sorted.length;
+      const avg = total / days;
+      const best = sorted.reduce((max, e) => (e.count > max.count ? e : max), sorted[0]);
+      const dateFormatter = new Intl.DateTimeFormat('it-IT', { dateStyle: 'medium' });
+      const monthFormatter = new Intl.DateTimeFormat('it-IT', { month: 'short', year: '2-digit' });
+
+      const monthly = buildMonthlyTotals(sorted);
+      const maxMonth = Math.max(...monthly.map(([, value]) => value), 1);
+
+      const chartHtml = monthly.map(([key, value]) => {
+        const d = new Date(key + '-01');
+        const height = (value / maxMonth) * 120 + 6;
+        return `<div class="report-bar" style="height:${height}px">
+          <div class="report-bar-label">${monthFormatter.format(d).toUpperCase()}</div>
+        </div>`;
+      }).join('');
+
+      const rows = sorted.map(e => {
+        const d = new Date(e.date);
+        const weekday = new Intl.DateTimeFormat('it-IT', { weekday: 'long' }).format(d);
+        return `<tr>
+          <td>${dateFormatter.format(d)}</td>
+          <td>${weekday}</td>
+          <td><strong>${e.count}</strong></td>
+        </tr>`;
+      }).join('');
+
+      reportBody.innerHTML = `
+        <div class="card">
+          <div class="stat-grid">
+            <div class="stat">
+              <div class="stat-label">Totale DORO</div>
+              <div class="stat-value">${total}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Giorni registrati</div>
+              <div class="stat-value">${days}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Media giornaliera</div>
+              <div class="stat-value">${avg.toFixed(1)}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Miglior giorno</div>
+              <div class="stat-value">${best.count}</div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top: 16px;">
+          <h3 class="card-title">Trend mensile</h3>
+          <div class="report-chart">${chartHtml || '<div>Nessun dato mensile.</div>'}</div>
+        </div>
+        <div class="card" style="margin-top: 16px;">
+          <h3 class="card-title">Storico completo</h3>
+          <table class="report-table">
+            <thead>
+              <tr><th>Data</th><th>Giorno</th><th>DORO</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function openReport() {
+      const entries = loadEntries();
+      renderReport(entries);
+      reportModal.classList.add('is-open');
+      reportModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeReport() {
+      reportModal.classList.remove('is-open');
+      reportModal.setAttribute('aria-hidden', 'true');
+    }
+    let phraseIndex = 0;
+    function rotatePhrase() {
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      subtitleEl.textContent = phrases[phraseIndex];
+    }
+    setInterval(rotatePhrase, 3500);
+
+    function loadEntries() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (err) {
+        console.error('Load error', err);
+        return [];
+      }
+    }
+
+    function saveEntries(entries) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    }
+
+    function startOfDay(date) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
+
+    function formatKey(date) {
+      return startOfDay(date).toISOString().slice(0, 10);
+    }
+
+    function startOfWeek(date) {
+      const d = startOfDay(date);
+      const day = d.getDay(); // 0=Sun
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday start
+      return startOfDay(new Date(d.setDate(diff)));
+    }
+
+    function startOfMonth(date) {
+      const d = startOfDay(date);
+      d.setDate(1);
+      return d;
+    }
+
+    function computeStats(entries) {
+      const today = startOfDay(new Date());
+      const weekStart = startOfWeek(today);
+      const monthStart = startOfMonth(today);
+
+      const todayCount = entries.filter(e => e.date === formatKey(today)).reduce((s, e) => s + e.count, 0);
+      const weekTotal = entries.filter(e => new Date(e.date) >= weekStart).reduce((s, e) => s + e.count, 0);
+      const monthTotal = entries.filter(e => new Date(e.date) >= monthStart).reduce((s, e) => s + e.count, 0);
+      const streak = computeStreak(entries, today);
+
+      return { todayCount, weekTotal, monthTotal, streak };
+    }
+
+    function computeStreak(entries, todayDate) {
+      const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+      let streak = 0;
+      let current = startOfDay(todayDate);
+
+      for (const entry of sorted) {
+        const entryDate = startOfDay(entry.date);
+        if (entryDate.getTime() === current.getTime()) {
+          if (entry.count > 0) streak += 1;
+          current.setDate(current.getDate() - 1);
+        } else if (entryDate < current) {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function last7Days(entries) {
+      const today = startOfDay(new Date());
+      const days = [];
+      for (let i = 6; i >= 0; i -= 1) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const key = formatKey(d);
+        const count = entries.filter(e => e.date === key).reduce((s, e) => s + e.count, 0);
+        days.push({ date: d, count });
+      }
+      return days;
+    }
+
+    function render(entries) {
+      const stats = computeStats(entries);
+      todayCountEl.textContent = stats.todayCount;
+      statTodayEl.textContent = stats.todayCount;
+      statWeekEl.textContent = stats.weekTotal;
+      statMonthEl.textContent = stats.monthTotal;
+      statStreakEl.textContent = stats.streak;
+
+      renderHistory(entries);
+      renderChart(entries);
+    }
+
+    function renderHistory(entries) {
+      const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
+      const formatter = new Intl.DateTimeFormat('it-IT', { dateStyle: 'medium' });
+      const weekday = new Intl.DateTimeFormat('it-IT', { weekday: 'long' });
+
+      historyBodyEl.innerHTML = sorted.map(e => {
+        const date = new Date(e.date);
+        return `<tr>
+          <td>${formatter.format(date)}</td>
+          <td>${weekday.format(date)}</td>
+          <td><strong>${e.count}</strong></td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="3">Nessun DORO ancora, premi il bottone!</td></tr>';
+    }
+
+    function renderChart(entries) {
+      const days = last7Days(entries);
+      const max = Math.max(...days.map(d => d.count), 1);
+      const weekday = new Intl.DateTimeFormat('it-IT', { weekday: 'short' });
+
+      chartEl.innerHTML = days.map(d => {
+        const height = (d.count / max) * 140 + 4;
+        return `<div class="bar" style="height:${height}px">
+          <div class="bar-label">${weekday.format(d.date).toUpperCase()}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function addDoro() {
+      const entries = loadEntries();
+      const key = formatKey(new Date());
+      const idx = entries.findIndex(e => e.date === key);
+      if (idx >= 0) {
+        entries[idx].count += 1;
+      } else {
+        entries.push({ date: key, count: 1 });
+      }
+      saveEntries(entries);
+      render(entries);
+    }
+
+    addBtn.addEventListener('click', addDoro);
+    reportBtn.addEventListener('click', openReport);
+    reportClose.addEventListener('click', closeReport);
+    reportModal.addEventListener('click', (event) => {
+      if (event.target === reportModal) closeReport();
+    });
+    reportPrint.addEventListener('click', () => {
+      if (!reportModal.classList.contains('is-open')) openReport();
+      window.print();
+    });
+
+    render(loadEntries());
+  </script>
+</body>
+</html>
