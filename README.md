@@ -1,37 +1,34 @@
-# ContaDORO
+# ContaDORO 2.0
 
-App iOS (SwiftUI) per contare quanti panini mangi ogni giorno, con statistiche settimanali e mensili in locale (solo offline).
+Versione web di ContaDORO. Conta i DORO giornalieri con statistiche, storico e report stampabile. Tutto gira in locale nel browser tramite localStorage.
 
 ## Struttura
-- `ContaDORO/ContaDOROApp.swift`: entry point con TabView (Oggi + Statistiche).
-- `ContaDORO/CounterView.swift`: schermo principale con pulsante panino e conteggio del giorno.
-- `ContaDORO/StatsView.swift`: riepilogo settimana/mese/streak e lista storico.
-- `ContaDORO/Models.swift`: store con persistenza locale (UserDefaults) e calcolo statistiche.
-- `ContaDORO/Theme.swift`: palette anni '80.
+- `docs/index.html`: app web 2.0.
+- `docs/*.png`: loghi e immagini usati come sfondo, pulsanti e report.
 
-## Assets
-Metti il logo nelle risorse Xcode:
-1. Apri `ContaDORO.xcodeproj` (creala da Xcode usando App iOS SwiftUI e sostituisci i file con questi).
-2. In `Assets.xcassets`, aggiungi:
-   - App Icon con il logo (`dorolungo.png` o `Dorooriginale.png`).
-   - Un `Image Set` chiamato `SandwichIcon` se vuoi usare un'immagine al posto dell'icona disegnata; altrimenti il pulsante usa il disegno SwiftUI incluso.
+## Funzioni
+- Conteggio giornaliero con pulsante DORO.
+- Statistiche: oggi, settimana, mese, streak.
+- Grafico ultimi 7 giorni.
+- Storico completo.
+- Report con grafici e stampa PDF (include loghi).
 
-## Note di design
-- Palette neon: rosa/verde/mostarda su sfondo viola scuro, vibe anni '80.
-- Pulsante centrale con gradiente e icona panino agli spinaci disegnata in SwiftUI (`SandwichIcon`).
+## Avvio locale
+Opzione semplice: apri `docs/index.html` con Chrome/Edge/Firefox.
 
-## Build
-1. Crea un nuovo progetto iOS App (SwiftUI) in Xcode chiamato `ContaDORO`.
-2. Sostituisci i file generati con quelli in `ContaDORO/`.
-3. Seleziona un target minimo iOS 16+ (consigliato) e builda su simulator/dispositivo.
+Opzione server locale:
+```
+cd "C:\Users\Michelebr\OneDrive - ESA engineering\Desktop\Apps\prova app\docs"
+python -m http.server 8080
+```
+Poi apri `http://localhost:8080`.
 
-## Funzionalità
-- Tap sul bottone aggiunge un panino al giorno corrente.
-- Statistiche calcolate localmente: oggi, settimana, mese, streak giornaliera.
-- Storico giornaliero ordinato dal più recente.
+## GitHub Pages
+Per pubblicare solo la 2.0:
+- Settings ? Pages
+- Source: Deploy from a branch
+- Branch: `contadoro-2.0`
+- Folder: `/docs`
 
-## Versione PC (offline, browser)
-- Apri `web/index.html` con Chrome/Edge/Firefox (doppio click da PC).
-- Salva dati in locale via localStorage, nessuna connessione richiesta.
-- Schermate: contatore giornaliero, riepilogo, grafico ultimi 7 giorni e storico.
-- Logo: `web/dorolungo.png` gia incluso; sostituiscilo con il tuo file mantenendo lo stesso nome per aggiornarlo.
+## Dati
+I dati restano nel browser (localStorage). Non sono condivisi tra dispositivi.
